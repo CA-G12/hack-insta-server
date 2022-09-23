@@ -57,7 +57,7 @@ app.post('/authorize_token', (req, res) => {
   form.append('client_id', process.env.client_id);
   form.append('client_secret', process.env.client_server);
   form.append('grant_type', 'authorization_code');
-  form.append('redirect_uri', 'https://localhost:3000/');
+  form.append('redirect_uri', 'https://crushyyy.herokuapp.com/');
   form.append('code', code);
 
   curl.post(url, form, {headers: {
