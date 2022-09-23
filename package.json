@@ -13,6 +13,7 @@
   "dependencies": {
     "axios": "^0.27.2",
     "axios-oauth-client": "^1.5.0",
+    "cloudinary": "^1.32.0",
     "curl": "^0.1.4",
     "dotenv": "^16.0.2",
     "express": "^4.18.1",

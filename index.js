@@ -4,7 +4,9 @@ const curl = require('curl');
 const FormData = require('form-data');
 const fs = require('fs');
 const { join } = require('path');
-const fetch = require('node-fetch')
+const cloudinary = require('cloudinary').v2
+
+ 
 require('dotenv').config();
 
 const app = express();
@@ -16,11 +18,17 @@ app.get('/', (req, res) => {
 })
 
 app.post('/remove-bg', (req, res) => {
+  cloudinary.config({
+    secure: true,
+    cloud_name: 'diujf6140', 
+    api_key: process.env.cloud_key, 
+    api_secret: process.env.cloud_secret,
+  });
 
     const { image_url } = req.body;
     const formData = new FormData();
     formData.append('size', 'auto');
-    formData.append('image_url', image);
+    formData.append('image_url', image_url);
     
     axios({
       method: 'post',
@@ -35,8 +43,11 @@ app.post('/remove-bg', (req, res) => {
     })
     .then((response) => {
       if(response.status != 200) return console.error('Error:', response.status, response.statusText);
-      fs.writeFileSync("no-bg.png", response.data);
-      res.sendFile(join(__dirname, "no-bg.png"))
+      fs.writeFileSync("no-bg.png", response.data);  
+      cloudinary.uploader.upload(join(__dirname, 'no-bg.png'), {upload_preset: "ml_default"}, (error, result)=> {
+        if (!error) res.send({url: result.url, secure_url: result.secure_url });
+        else res.send(error)
+      });    
     })
     .catch((error) => {
         return console.error('Request failed:', error);
@@ -57,13 +68,13 @@ app.post('/authorize_token', (req, res) => {
   form.append('client_id', process.env.client_id);
   form.append('client_secret', process.env.client_server);
   form.append('grant_type', 'authorization_code');
-  form.append('redirect_uri', 'https://localhost:3000/');
+  form.append('redirect_uri', 'https://crushyyy.herokuapp.com/');
   form.append('code', code);
 
   curl.post(url, form, {headers: {
   ...form.getHeaders(),
   }}, (err, data) => {
-      if (!err) res.json(data.body)
+      if (!err) res.json(JSON.parse(data.body))
       else res.json(err);
   });
 
