@@ -90,7 +90,7 @@ app.post('/long-access-token', (req, res) => {
   const url = `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${clientSecret}&access_token=${accessToken}`;
   
   curl.get(url, (error, response) => {
-    if (!error) res.json(response.body);
+    if (!error) res.json(JSON.parse(response.body));
     else res.json(error);
   });
 
