@@ -4,12 +4,15 @@ const curl = require('curl');
 const FormData = require('form-data');
 const fs = require('fs');
 const { join } = require('path');
+var cors = require('cors')
+
 const cloudinary = require('cloudinary').v2
 
  
 require('dotenv').config();
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: false}))
 
