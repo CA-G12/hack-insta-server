@@ -6,7 +6,9 @@ const fs = require('fs');
 const { join } = require('path');
 var cors = require('cors')
 const cloudinary = require('cloudinary').v2
-
+const fetch = require('node-fetch');
+const { response } = require('express');
+const { resolveSoa } = require('dns');
  
 require('dotenv').config();
 
@@ -78,6 +80,18 @@ app.post('/authorize-token', (req, res) => {
   }}, (err, data) => {
       if (!err) res.json(JSON.parse(data.body))
       else res.json(err);
+  });
+
+});
+
+app.post('/long-access-token', (req, res) => {
+  const { accessToken }  = req.body;
+  const clientSecret = process.env.client_server;
+  const url = `https://graph.instagram.com/access_token?grant_type=ig_exchange_token&client_secret=${clientSecret}&access_token=${accessToken}`;
+  
+  curl.get(url, (error, response) => {
+    if (!error) res.json(response.body);
+    else res.json(error);
   });
 
 });
