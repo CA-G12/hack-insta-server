@@ -5,7 +5,6 @@ const FormData = require('form-data');
 const fs = require('fs');
 const { join } = require('path');
 var cors = require('cors')
-
 const cloudinary = require('cloudinary').v2
 
  
@@ -63,7 +62,7 @@ app.post('/test-posting', (req, res) => {
   res.json({msg: `hi ${name}`});
 })
 
-app.post('/authorize_token', (req, res) => {
+app.post('/authorize-token', (req, res) => {
   const { code } = req.body;
   const url = 'https://api.instagram.com/oauth/access_token';
 
@@ -82,6 +81,27 @@ app.post('/authorize_token', (req, res) => {
   });
 
 });
+
+app.post('/test-authorize-token', (req, res) => {
+  const { code } = req.body;
+  const url = 'https://api.instagram.com/oauth/access_token';
+
+  const form = new FormData();
+  form.append('client_id', process.env.client_id);
+  form.append('client_secret', process.env.client_server);
+  form.append('grant_type', 'authorization_code');
+  form.append('redirect_uri', 'https://localhost:3000/');
+  form.append('code', code);
+
+  curl.post(url, form, {headers: {
+  ...form.getHeaders(),
+  }}, (err, data) => {
+      if (!err) res.json(JSON.parse(data.body))
+      else res.json(err);
+  });
+
+});
+
 
 
 app.listen(process.env.PORT || 4000, () => {
